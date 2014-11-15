@@ -11,10 +11,10 @@ $(function(){
 	var first_card = 0;
 	var click_addr = 0;
 	var click_valid = 1;
-	var card1 = null;
-	var card2 = null;
-	var choose1 = null;
-	var choose2 = null;
+	var $card1 = null;
+	var $card2 = null;
+	var $choose1 = null;
+	var $choose2 = null;
 	var card_state = new Array(num_row*num_col);
 	var score = 0;
 	var count = 0;
@@ -26,56 +26,72 @@ $(function(){
 
 	//initialize click method
 	function initializeImage($img, row, col) {
-	$img.click(function() {
-		var offset = row * num_col;
-		if(click_valid && (card_state[offset+col]==0)){
-		$(this).addClass('element_click');
-		$(this).attr('src' , 'src/image'+img_elements[offset+col]+'.jpg');
+		$img.click(function() {
+				var offset = row * num_col;
+				if(click_valid && (card_state[offset+col]==0)){
+				$(this).addClass('element_click');
+				$(this).attr('src' , 'src/image'+img_elements[offset+col]+'.jpg');
 
-			if(first_card){
-			$choose2 = img_elements[offset+col];
-			$card2 = $(this);
-			click_valid = 0;
-			score++;
-			$('#count').text(score);
-			//check result//
-				if($choose1 != $choose2){
-					setTimeout(function() {
-						first_card = 0;
-						click_valid = 1;
-						$card1.removeClass('element_click').addClass('element');
-						$card1.attr('src','');
-						$card2.removeClass('element_click').addClass('element');
-						$card2.attr('src','');
-						card_state[offset+col]=0;
-						card_state[click_addr]=0;
-						}, 1000);
-				}else{
-					count++;
-					setTimeout(function(){
-						first_card = 0;
-						click_valid = 1;
-						card_state[offset+col]=1;
-						},200);
+				if(first_card){
+				secondCardClick(offset+col,$(this));
+
+				}else{ 
+				firstCardClick(offset+col,$(this));
 				}
-				if(count >= (num_row*num_col)/2){check_end();}
-				
-			}else{ 
-			$choose1 = img_elements[offset+col];
-			$card1 = $(this);
-			setTimeout(function(){
-			first_card = 1;
-			card_state[offset+col]=1;
-			click_addr = offset+col;
-			},200);
-			}
-		}
-		//alert("status ="+card_state);
-		});
-	$img.width(image_width).height(image_height);
+				}
+				});
+		$img.width(image_width).height(image_height);
 	}
 
 	//function announce
+	function answer_wrong(index){
+		count++;
+		setTimeout(function(){
+				first_card = 0;
+				click_valid = 1;
+				card_state[index]=1;
+				},200);
+	}
+	function answer_correct(index){
+			setTimeout(function() {
+					first_card = 0;
+					click_valid = 1;
+					$card1.removeClass('element_click').addClass('element');
+					$card1.attr('src','');
+					$card2.removeClass('element_click').addClass('element');
+					$card2.attr('src','');
+					card_state[index]=0;
+					card_state[click_addr]=0;
+					}, 1000);
+	}
+	function check_result(index){
+		if($choose1 != $choose2){
+			answer_correct(index);
+		}else{
+			answer_wrong(index);
+		}
+		if(count >= (num_row*num_col)/2){check_end();}	
+	}
+	function secondCardClick(index,$img){
+		$choose2 = img_elements[index];
+		$card2 = $img;
+		click_valid = 0;
+		score++;
+		$('#count').text(score);
+		//check result//
+		check_result(index);
+	}
+
+	function firstCardClick(index,$img){
+		$choose1 = img_elements[index];
+		$card1 = $img;
+		setTimeout(function(){
+				first_card = 1;
+				card_state[index]=1;
+				click_addr = index;
+				},200);
+	}
+
 	function getRandomInt(min, max) {
 		return Math.floor(Math.random() * (max - min + 1)) + min;
 	}
@@ -117,7 +133,7 @@ $(function(){
 	createRandomArray(num_row*num_col);
 	initCardState();
 	$('#count').text(score);
-	
+
 	//put the card table
 	var $container = $('#container');
 	for(var row=0;row<num_row;row++){
@@ -127,7 +143,6 @@ $(function(){
 			//record image location from row and col
 			initializeImage($img, row, col);
 
-			//img_elements += $img;
 			$container.append($img);
 		}
 	}
@@ -147,19 +162,19 @@ $(function(){
 			});
 
 	function enlarge($img){
+		$img.animate({
+width: '+=10px',
+height: '+=10px'
+},800,function(){unlarge($img)});
+}
+function unlarge($img){
 	$img.animate({
-		width: '+=10px',
-		height: '+=10px'
-		},800,function(){unlarge($img)});
-	}
-	function unlarge($img){
-	$img.animate({
-		width: '-=10px',
-		height: '-=10px'
-		},800,function(){enlarge($img)});
-	}
-	setTimeout(function(){
-	enlarge($('.button'));
-	},1000);
+width: '-=10px',
+height: '-=10px'
+},800,function(){enlarge($img)});
+}
+setTimeout(function(){
+		enlarge($('.button'));
+		},1000);
 });
 
