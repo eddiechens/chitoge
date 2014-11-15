@@ -1,0 +1,57 @@
+p{
+color : blue;
+	display:inline-block;
+	font-family: 'Spicy Rice', cursive;
+}
+
+#row{
+}
+
+#red {
+    height:100px;
+    width:100px;
+}
+
+#main_plane{
+	background-color:#D8D8D8;
+	display:inline-block;
+}
+
+#container {
+	background-color: #d8d8d8;
+}
+
+.light_red{
+	background-color:#AA0000;
+}
+
+.element{
+	display: block;
+	position: relative;
+	float: left;
+	background-color:#D8D8D8;
+	opacity: 0.5;
+	box-shadow: 1px 1px 0px #000, -1px -1px 0px #000;
+}
+
+.element:hover {
+	opacity: 1.0;
+	/*width: 400px;*/
+	box-shadow: 1px 1px 1px #000, -1px -1px 1px #aaa;
+}
+
+.element_click{
+	opacity: 1.0;
+}
+
+.element_click:hover {
+	box-shadow: 1px 1px 0px #000, -1px -1px 0px #000;
+}
+
+.element_unclickable{
+}
+
+.button{
+	float: left;
+	width:240px;
+}
